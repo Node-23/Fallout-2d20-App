@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#000000"
-    android:gravity="center_horizontal"
+    android:gravity="center"
     android:orientation="vertical"
     tools:context=".View.Status">
 
@@ -51,16 +51,15 @@
 
     <LinearLayout
         android:id="@+id/linearLayout"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:nestedScrollingEnabled="false"
             android:id="@+id/recycle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:itemCount="10"
+            tools:itemCount="5"
             tools:listitem="@layout/atributes_layout">
 
         </androidx.recyclerview.widget.RecyclerView>

@@ -3,10 +3,14 @@ package com.rubick.falloutrpgapp.View;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -36,8 +40,12 @@ public class Status extends AppCompatActivity {
     private MediaPlayer downBtn;
     private MediaPlayer soundBtFX;
 
-    //TODO: save data
+    //Swipe screen variables
+    private float x1,x2;
+    static final int MIN_DISTANCE = 150;
+
     //TODO: create consumable items screen
+    //TODO: old TV filter on screen
 
     @Override
     public void onBackPressed() {
@@ -47,6 +55,7 @@ public class Status extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Objects.requireNonNull(getSupportActionBar()).hide();
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_status);
 
         if(PreferenceData.LoadEntrance(this)){
@@ -66,6 +75,29 @@ public class Status extends AppCompatActivity {
         startActivity.start();
     }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent event)
+    {
+        switch(event.getAction())
+        {
+            case MotionEvent.ACTION_DOWN:
+                x1 = event.getX();
+                break;
+            case MotionEvent.ACTION_UP:
+                x2 = event.getX();
+                float deltaX = x2 - x1;
+                if (Math.abs(deltaX) > MIN_DISTANCE)
+                {
+                    Toast.makeText(this, "left2right swipe", Toast.LENGTH_SHORT).show ();
+                }
+                else
+                {
+                    // consider as something else - a screen tap for example
+                }
+                break;
+        }
+        return super.onTouchEvent(event);
+    }
 
     @Override
     protected void onPause() {
@@ -138,7 +170,13 @@ public class Status extends AppCompatActivity {
         soundBt = findViewById(R.id.soundBt);
         recyclerView = findViewById(R.id.recycle);
         Adapter adapter = new Adapter(userdata.getUserAttributes()); //Dentro vai o array de atributos
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext()) {
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        };
+        recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(adapter);
 
         //sound items
