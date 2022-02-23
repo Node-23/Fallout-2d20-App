@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Fallout RPG App</string>
+    <string name="status_title">STATUS</string>
+    <string name="atribute_name_example">HP</string>
+    <string name="atribute_value_example">15</string>
+    <string name="loading">LOADING</string>
+</resources>
