@@ -1,5 +1,6 @@
 package com.rubick.falloutrpgapp.View;
 
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,9 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -42,10 +41,10 @@ public class Status extends AppCompatActivity {
 
     //Swipe screen variables
     private float x1,x2;
-    static final int MIN_DISTANCE = 150;
+    static final int MIN_DISTANCE = 250;
 
-    //TODO: create consumable items screen
     //TODO: old TV filter on screen
+    //TODO: save data when change activity
 
     @Override
     public void onBackPressed() {
@@ -88,12 +87,13 @@ public class Status extends AppCompatActivity {
                 float deltaX = x2 - x1;
                 if (Math.abs(deltaX) > MIN_DISTANCE)
                 {
-                    Toast.makeText(this, "left2right swipe", Toast.LENGTH_SHORT).show ();
+                    Intent item = new Intent(getApplicationContext(), Items.class);
+                    startActivity(item);
                 }
-                else
-                {
-                    // consider as something else - a screen tap for example
-                }
+//                else
+//                {
+//                    // consider as something else - a screen tap for example
+//                }
                 break;
         }
         return super.onTouchEvent(event);
@@ -159,7 +159,6 @@ public class Status extends AppCompatActivity {
     private void setAttributes() {
         DefaultAttributes = new ArrayList<>();
         DefaultAttributes.add(new Atribute("HP", 0));
-        DefaultAttributes.add(new Atribute("Action Points", 0));
         DefaultAttributes.add(new Atribute("Lucky points", 0));
         DefaultAttributes.add(new Atribute("Caps", 0));
         DefaultAttributes.add(new Atribute("XP", 0));
