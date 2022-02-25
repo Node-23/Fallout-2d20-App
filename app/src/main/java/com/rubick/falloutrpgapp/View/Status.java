@@ -1,5 +1,6 @@
 package com.rubick.falloutrpgapp.View;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -8,6 +9,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -38,6 +41,7 @@ public class Status extends AppCompatActivity {
     private MediaPlayer upBtn;
     private MediaPlayer downBtn;
     private MediaPlayer soundBtFX;
+    private int changeValue;
 
     //Swipe screen variables
     private float x1,x2;
@@ -57,14 +61,12 @@ public class Status extends AppCompatActivity {
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_status);
 
-        if(PreferenceData.LoadEntrance(this)){
+        userdata = PreferenceData.LoadUserData(this);
+        if(userdata == null){
             userdata = new UserData();
             setAttributes();
             userdata.setSoundOn(true);
-            PreferenceData.SaveEntrance(this, false);
             PreferenceData.SaveUserData(this, userdata);
-        }else{
-            userdata = PreferenceData.LoadUserData(this);
         }
 
         setItems();
@@ -236,6 +238,10 @@ public class Status extends AppCompatActivity {
 
             value.setText(decimalNumber(atribute.getValue()));
 
+            value.setOnClickListener(v -> {
+                OpenAddPopup(atribute, itemView);
+            });
+
             sub.setOnClickListener(v -> {
                 SubSoundFX(name.getText().toString());
                 int intValue = Integer.parseInt(String.valueOf(value.getText()));
@@ -262,5 +268,48 @@ public class Status extends AppCompatActivity {
             valueTxT = String.valueOf(value);
         }
         return valueTxT;
+    }
+
+    public void OpenAddPopup(Atribute atribute, View itemView){
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        final View addTaskView = getLayoutInflater().inflate(R.layout.change_popup, null);
+        EditText valueToChange = (EditText) addTaskView.findViewById(R.id.valueToChange);
+        Button add = (Button) addTaskView.findViewById(R.id.addBt);
+        Button sub = (Button) addTaskView.findViewById(R.id.subBt);
+        Button cancelTask = (Button) addTaskView.findViewById(R.id.cancelBt);
+
+        dialogBuilder.setView(addTaskView);
+        AlertDialog dialog = dialogBuilder.create();
+        dialog.show();
+
+        add.setOnClickListener(view -> {
+            changeValue = Integer.parseInt(String.valueOf(valueToChange.getText()));
+            ChangeStatusValue(atribute, itemView);
+            dialog.dismiss();
+        });
+
+        sub.setOnClickListener(view -> {
+            changeValue = Integer.parseInt(String.valueOf(valueToChange.getText())) * -1;
+            ChangeStatusValue(atribute, itemView);
+            dialog.dismiss();
+        });
+
+        cancelTask.setOnClickListener(view -> {
+            changeValue = 0;
+            dialog.dismiss();
+        });
+
+    }
+
+    public void ChangeStatusValue(Atribute atribute, View itemView){
+        TextView value = itemView.findViewById(R.id.attributeValue);
+        int intValue = Integer.parseInt(String.valueOf(value.getText()));
+        if(intValue + changeValue < 0){
+            value.setText("00");
+            atribute.setValue(0);
+        }else{
+            value.setText(decimalNumber(intValue + changeValue));
+            atribute.setValue(intValue + changeValue);
+        }
     }
 }
